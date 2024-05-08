@@ -1,0 +1,191 @@
+﻿@model IEnumerable<IGrouping<Tuple<DateTime, TimeSpan>, Poultry_Management_System.Models.OrderedProduct>>
+@{
+    ViewBag.Title = "MyOrders";
+}
+<style>
+
+
+
+    #star {
+        margin-left: -5px !important;
+        vertical-align: bottom !important;
+        opacity: 0.5;
+    }
+
+
+    .more {
+        opacity: 0.5 !important;
+    }
+
+    .btn:hover {
+        color: black !important;
+    }
+
+    .vl {
+        margin: 8px !important;
+        width: 2px;
+        border-right: 1px solid #aaaaaa;
+        height: 25px;
+    }
+
+
+    #plus {
+        opacity: 0.8;
+    }
+
+
+    .card {
+        border-radius: 10px !important;
+    }
+
+    a:hover {
+        background-color: #ccc !important;
+    }
+
+
+
+    .btn-outlined:active {
+        color: #FFF;
+        border-color: #fff !important;
+    }
+
+
+    img {
+        cursor: pointer;
+        overflow: visible;
+    }
+
+    .btn:focus,
+    .btn:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+</style>
+
+<section class="w3l-index-about py-5" id="about2">
+    <div class="container py-md-5 py-2">
+        <h2>MyOrders</h2>
+
+
+        @foreach (var group in Model)
+        {
+            <div class="container">
+                <div class="card mt-5 border-5 pt-2 active pb-0 px-3">
+                    <div class="card-body ">
+                        <div class="row">
+                            <div class="col-12 ">
+                                <h4 class="card-title "><b>  Date: @group.Key.Item1.ToLongDateString()</b></h4>
+
+                            </div>
+                            @foreach (var item in group)
+                            {
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h6 class="card-subtitle mb-2 text-muted">
+                                                    <p class="card-text text-muted small">
+                                                        <a href="#" onclick="showBiggerImage('@item.Product.picture')">
+                                                            <img src="~/assets/images/@item.Product.picture" class="mr-1" width="50" height="50" id="star">
+                                                            <span class="vl mr-2 ml-0"></span>
+                                                        </a>
+
+                                                        <label for="price">Product Name:</label>
+                                                        <span id="priceValue" style="padding-left: 1%; color: orange; ">@item.Product.Name</span>
+
+                                                        <label for="quantity" style="padding-left: 10%; margin-left: -8px;">Quantity:</label>
+                                                        <span id="quantityValue" style="padding-left: 1%; color: orange;">@item.Quantity</span>
+
+                                                        <label for="price" style="padding-left: 10%; margin-left: -8px;">Cost:</label>
+                                                        @{ double tot = (double)item.Product.Price * item.Quantity;}
+                                                        <span id="priceValue" style="padding-left: 1%; color: orange;">R @tot</span>
+                                                    </p>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+
+
+
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white px-0">
+                        <div class="row">
+                            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                <div>
+                                    <label for="shippingMethod">Shipping method:</label>
+                                    <span id="shippingMethodValue" style="padding-left: 5px; color: orange;">@group.FirstOrDefault().CustomerOrder.ShippingMethod</span>
+                                </div>
+                                <div>
+                                    <label for="deliveryFee">Delivery fee:</label>
+                                    <span id="deliveryFeeValue" style="padding-left: 5px; color: orange;">R @group.FirstOrDefault().CustomerOrder.deliveryFee</span>
+                                </div>
+                                <div>
+                                    <label for="basicCost">Basic Cost:</label>
+                                    <span id="basicCostValue" style="padding-left: 5px; color: orange;">R @group.FirstOrDefault().CustomerOrder.Amount</span>
+                                </div>
+                                <div>
+                                    <label for="totalCost">Total Cost:</label>
+                                    @{ double fTot = (double)group.FirstOrDefault().CustomerOrder.Amount + @group.FirstOrDefault().CustomerOrder.deliveryFee;}
+                                    <span id="totalCostValue" style="padding-left: 5px; color: orange;">R @fTot</span>
+                                </div>
+                                <button class="btn btn-outline-dark" style="margin-left: 20px;" onclick="location.href='@Url.Action(actionName: "TrackOrder", controllerName: "OrderedProducts", routeValues: new {id = group.FirstOrDefault().CustomerOrderId })'">Track Order</button>
+                                @if (group.FirstOrDefault().CustomerOrder.Status == "Placedd")
+                                {
+                                    <button class="btn btn-outline-dark" style="margin-left: 20px;" onclick="location.href='@Url.Action(actionName: "Cancel", controllerName: "OrderedProducts", routeValues: new {id = group.FirstOrDefault().CustomerOrderId })'">Cancel</button>
+                                }
+                                else if (group.FirstOrDefault().CustomerOrder.Status == "Order Recived")
+                                {
+                                    <button class="btn btn-outline-dark" style="margin-left: 20px;" onclick="Return(@group.FirstOrDefault().CustomerOrderId)">Return Order</button>
+
+                                }
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+            </div>
+        }
+    </div>
+
+</section>
+<script>
+    function Return(id) {
+        var reason = prompt("Please enter reason for return:");
+        if (reason !== null) {
+
+        alertify.confirm('Return Order', 'Are you sure you want to request a reuturn for this order with reason: ' + reason, function () {
+
+            window.location.href = '@Url.Action("ReturnOrder", "OrderedProducts")/' + id + '?reason=' + encodeURIComponent(reason);
+        }, null);
+    }
+}
+
+
+
+
+
+
+
+
+</script>

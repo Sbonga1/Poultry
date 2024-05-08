@@ -1,0 +1,209 @@
+﻿@model IEnumerable<Poultry_Management_System.Models.Driver>
+
+@{
+    ViewBag.Title = "Drivers";
+}
+<style>
+   
+
+
+    .card {
+        width: 400px;
+        border: none;
+        border-radius: 10px;
+        background-color: #ffd800;
+    }
+
+
+
+    .stats {
+        background: #f2f5f8 !important;
+        color: #000 !important;
+    }
+
+    .articles {
+        font-size: 10px;
+        color: #a1aab9;
+    }
+
+    .number1 {
+        font-weight: 500;
+    }
+
+    .followers {
+        font-size: 10px;
+        color: #a1aab9;
+    }
+
+    .number2 {
+        font-weight: 500;
+    }
+
+    .rating {
+        font-size: 10px;
+        color: #a1aab9;
+    }
+
+    .number3 {
+        font-weight: 500;
+    }
+</style>
+
+<section class="w3l-index-about py-5" id="about2">
+    <div class="container py-md-5 py-2">
+        <h2>Index</h2>
+
+        @*<table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Surname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Picture)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsAvailable)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CarName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CarModel)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CarReg)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CarType)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Surname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Picture)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsAvailable)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CarName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CarModel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CarReg)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CarType)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.DrivId }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.DrivId }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.DrivId })
+                    </td>
+                </tr>
+            }
+
+        </table>*@
+        
+    <div class="container mt-5 d-flex">
+        @foreach (var item in Model)
+        {
+            <div class="card p-3">
+
+                <div class="d-flex align-items-center">
+
+                    <div class="image" style="padding-right:5%">
+                        <img src="~/images/@item.Picture" class="rounded" width="155" height="150">
+                    </div>
+
+                    <div class="ml-3 w-100">
+
+                        <h4 class="mb-0 mt-0">@item.Name &nbsp; @item.Surname</h4>
+                        <span>@item.CarType &nbsp; Driver</span>
+
+                        <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
+
+                            <div class="d-flex flex-column">
+
+                                <span class="articles">Vehicle Name</span>
+                                <span class="number1">@item.CarName</span>
+
+                            </div>
+
+                            <div class="d-flex flex-column">
+
+                                <span class="followers">Model</span>
+                                <span class="number2">@item.CarModel</span>
+
+                            </div>
+
+
+                            <div class="d-flex flex-column">
+
+                                <span class="rating">Registration</span>
+                                <span class="number3">@item.CarReg</span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="button mt-2 d-flex flex-row align-items-center">
+                            <div style="padding-right:4%">
+                                <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='@Url.Action(actionName: "MyProfile", controllerName: "Drivers", routeValues: new {email = item.Email })'">More Info</button>
+                            </div>
+                            @if (Session["ProductId"] != null)
+                            {
+                                <div>
+                                    <button class="btn btn-sm btn-primary w-100 ml-2" onclick="Assign(@item.DrivId,'@item.Name','@item.Surname')">Assign</button>
+                                </div>
+                            }
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+        }
+        </div>
+
+
+       
+        </div>
+        
+</section>
+<script>
+    function Assign(id,name,surname) {
+
+
+        alertify.confirm('Assign Driver', 'Are you sure you want to Assign ' + name + ' ' + surname + ' to the delivery?', function () {
+        
+        window.location.href = '@Url.Action("Create", "DriverAssignments")/' + id;
+    }, null);
+}
+</script>

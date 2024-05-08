@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<section class="w3l-main-slider banner-slider" id="home">
+    <div class="owl-one owl-carousel owl-theme">
+        <div class="slider-info banner-view banner-top1">
+            <div class="container">
+                <div class="w3banner-grids">
+                    <div class="banner-info header-hero-19">
+                        <p class="w3hny-tag">Loyal to quality</p>
+                        <h3 class="title-hero-19">The chicken always comes chief.</h3>
+                        @if (!Request.IsAuthenticated)
+                        {
+                            <a href="@Url.Action("Register", "Account")" class="btn btn-style btn-primary mt-4">Get Started </a>
+                        }
+                        else if(!User.IsInRole("Admin") && !User.IsInRole("Driver"))
+                        {
+                            <a href="@Url.Action("ShopHome", "Home")" class="btn btn-style btn-primary mt-4">Purchase </a>
+                        }
+
+                    </div>
+                   
+                        <!-- dialog itself, mfp-hide class is required to make dialog hidden --
+                        <div id="small-dialog" class="zoom-anim-dialog mfp-hide">
+                          <iframe src="https://player.vimeo.com/video/26489864?h=0cb4432fb5" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+
+                        </div>
+                        <!-- dialog itself, mfp-hide class is required to make dialog hidden -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+
+</section>
+<!-- //main-slider -->

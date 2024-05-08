@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "mssql3": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/Group52024/providers/Microsoft.ServiceLinker/linkers/ConnectionString_43FA43AE44",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/poultry-management-systemdbserver/databases/Poultry_Management_System_db2",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionString"
+    }
+  }
+}

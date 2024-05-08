@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "FinishOrderDelivery";
+}
+<script src="~/Scripts/html5-qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<style>
+    .container2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 50vh;
+        margin: 20px auto; /* Adjust the margin to add space between the top and the container */
+    }
+
+    #qr-code-scanner {
+        width: 300px; /* Adjust the width as desired */
+        height: 300px; /* Adjust the height as desired */
+        border: 5px solid orange; /* Set border to orange color */
+        border-radius: 10px; /* Add border radius for rounded corners */
+    }
+
+    #manual-code-input {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+        /* Style the label and input for manual code input */
+        #manual-code-input label {
+            display: block;
+            color: orange; /* Set label color to orange */
+            margin-bottom: 10px; /* Add margin between label and input */
+        }
+
+        #manual-code-input input[type="text"] {
+            width: 200px; /* Adjust the width of the input field */
+            padding: 10px; /* Add padding for better appearance */
+            border: 1px solid orange; /* Set border to orange color */
+            border-radius: 5px; /* Add border radius for rounded corners */
+        }
+
+        #manual-code-input button {
+            padding: 10px 20px; /* Add padding for better appearance */
+            background-color: orange; /* Set button background color to orange */
+            color: white; /* Set button text color to white */
+            border: none; /* Remove button border */
+            border-radius: 5px; /* Add border radius for rounded corners */
+            cursor: pointer; /* Add cursor pointer on hover */
+        }
+
+            #manual-code-input button:hover {
+                background-color: darkorange; /* Darken button color on hover */
+            }
+</style>
+
+<section class="w3l-index-about py-5" id="about2">
+    <div class="container py-md-5 py-2">
+       
+        <h2>Finish Order Delivery</h2>
+        <div id="countdown"></div>
+        <form id="noResponseForm" action="@Url.Action("NoResponseAction", "DriverAssignments")" method="post">
+            
+            <button type="submit" id="submitButton" style="display: none;">Submit No Response</button>
+        </form>
+        <div class="container2">
+            <div id="qr-code-scanner"></div>
+        </div>
+
+        <div id="manual-code-input">
+            <form id="code-form" method="post" action="@Url.Action("FinishOrderDelivery", "DriverAssignments")">
+                <label for="code-input">Enter code manually:</label>
+                <input type="text" id="code-input" name="code">
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    // Function to update countdown timer
+    function updateCountdown() {
+        var countdownElement = document.getElementById('countdown');
+        var minutes = Math.floor(timeLeft / 60);
+        var seconds = timeLeft % 60;
+
+        // Display remaining time in minutes and seconds
+        countdownElement.innerHTML = 'Time Left: ' + minutes + 'm ' + seconds + 's';
+
+        // Decrease time left by 1 second
+        timeLeft--;
+
+        // If time left is less than 0, submit the form
+        if (timeLeft < 0) {
+            clearInterval(timer);
+            // Show the submit button before submitting the form
+            document.getElementById('submitButton').style.display = 'block';
+            document.getElementById('noResponseForm').submit();
+        }
+    }
+
+    // Set the countdown duration in seconds (1 minute = 60 seconds)
+    var duration = 60;
+
+    // Calculate time left (in seconds)
+    var timeLeft = duration;
+
+    // Update countdown every second
+    var timer = setInterval(updateCountdown, 1000);
+</script>
+
+
+<script>
+    // Function to handle manual code submission
+    function submitManualCode() {
+        var manualCode = document.getElementById('code-input').value;
+        if (manualCode.trim() !== '') {
+            // Call a function to handle the manual code submission
+            document.getElementById('code-form').submit();
+        } else {
+            alert('Please enter a code.');
+        }
+    }
+
+    // Function to send the scanned QR code or typed code to the server
+    function sendCodeToServer(code) {
+        // Use the scanned QR code if available, otherwise use the manually entered code
+        var codeToSend = code || document.getElementById('code-input').value;
+
+        // Set the value of the hidden input field
+        document.getElementById('code-input').value = codeToSend;
+
+        // Submit the form
+        document.getElementById('code-form').submit();
+    }
+
+    // Get access to the camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+            videoPreview.srcObject = stream;
+        })
+        .catch(function (error) {
+            console.error('Error accessing camera:', error);
+        });
+    const html5QrCodeScanner = new Html5QrcodeScanner("qr-code-scanner", {
+        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+        fps: 10,
+        qrbox: 250
+    });
+
+    html5QrCodeScanner.render(onScanSuccess, onScanFailure);
+
+    function onScanSuccess(qrCodeMessage) {
+        // Send the scanned QR code to the server
+        sendCodeToServer(qrCodeMessage);
+        html5QrCodeScanner.clear();
+    }
+
+    function onScanFailure(error) {
+        console.error("QR code scanning failed:", error);
+    }
+</script>
+
